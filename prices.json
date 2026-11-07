@@ -1,0 +1,158 @@
+{
+  "updated": "2026-11-07T00:00:00Z",
+  "categories": [
+    {
+      "id": 2,
+      "name": "Class 3 DSC",
+      "slug": "class-3-dsc"
+    },
+    {
+      "id": 3,
+      "name": "DGFT DSC",
+      "slug": "dgft-dsc"
+    },
+    {
+      "id": 4,
+      "name": "Foreign DSC",
+      "slug": "foreign-dsc"
+    },
+    {
+      "id": 5,
+      "name": "Document Signer",
+      "slug": "document-signer"
+    },
+    {
+      "id": 7,
+      "name": "USB Tokens",
+      "slug": "usb-tokens"
+    }
+  ],
+  "products": [
+    {
+      "id": 6,
+      "title": "E-Mudra - Individual Signature 2 Year",
+      "category": 2,
+      "price": 750,
+      "active": true
+    },
+    {
+      "id": 8,
+      "title": "E-Mudra Organization Signature 2 Year",
+      "category": 2,
+      "price": 1200,
+      "active": true
+    },
+    {
+      "id": 12,
+      "title": "E-Mudra Individuals/ Organization COMBO",
+      "category": 2,
+      "price": 2200,
+      "active": true
+    },
+    {
+      "id": 13,
+      "title": "E-Mudra Individual Signature Foreign National 2 Year",
+      "category": 4,
+      "price": 1300,
+      "active": true
+    },
+    {
+      "id": 14,
+      "title": "E-Mudra Organization Signature Foreign National 2 Year",
+      "category": 4,
+      "price": 3000,
+      "active": true
+    },
+    {
+      "id": 15,
+      "title": "Sify Safescrypt Individual Signature 2 Year",
+      "category": 2,
+      "price": 650,
+      "active": true
+    },
+    {
+      "id": 16,
+      "title": "Sify Safescrypt Organization Signature 2 Year",
+      "category": 2,
+      "price": 1200,
+      "active": true
+    },
+    {
+      "id": 17,
+      "title": "Sify Safescript Individuals/ Organization COMBO",
+      "category": 2,
+      "price": 2000,
+      "active": true
+    },
+    {
+      "id": 18,
+      "title": "Capricorn Individual Signature 2 Year",
+      "category": 2,
+      "price": 700,
+      "active": true
+    },
+    {
+      "id": 19,
+      "title": "Capricorn Organization Signature 2 Year",
+      "category": 2,
+      "price": 1200,
+      "active": true
+    },
+    {
+      "id": 20,
+      "title": "Capricorn Individuals/ Organization COMBO",
+      "category": 2,
+      "price": 2200,
+      "active": true
+    },
+    {
+      "id": 22,
+      "title": "Sify Safescript DGFT Signature 2 Year",
+      "category": 3,
+      "price": 1500,
+      "active": true
+    },
+    {
+      "id": 23,
+      "title": "Capricorn DGFT Signature 2 Year",
+      "category": 3,
+      "price": 1800,
+      "active": true
+    },
+    {
+      "id": 24,
+      "title": "E-Mudra DGFT Signature 2 Year",
+      "category": 3,
+      "price": 1800,
+      "active": true
+    },
+    {
+      "id": 25,
+      "title": "HYP2003 USB TOKEN",
+      "category": 7,
+      "price": 300,
+      "active": true
+    },
+    {
+      "id": 26,
+      "title": "E-Mudra - Individual Signature 3 Year",
+      "category": 2,
+      "price": 950,
+      "active": true
+    },
+    {
+      "id": 27,
+      "title": "Sify Safescrypt Individual Signature 3 Year",
+      "category": 2,
+      "price": 900,
+      "active": true
+    },
+    {
+      "id": 28,
+      "title": "Class 2 - doc signer 2 years",
+      "category": 5,
+      "price": 19999,
+      "active": true
+    }
+  ]
+}
