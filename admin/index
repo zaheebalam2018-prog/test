@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Big Infotech Admin</title>
+<style>
+:root{--blue:#008dd2;--dark:#006fa6;--ink:#17202a;--mute:#5d6b78;--line:#dbe3ea;--bg:#f3f6f9;--red:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:var(--blue);color:#fff;display:flex;align-items:center;gap:14px;padding:12px 20px}
+header h1{font-size:18px;font-weight:600;margin:0;flex:1}
+header a,header button{color:#fff;background:none;border:1px solid rgba(255,255,255,.6);border-radius:6px;padding:6px 12px;font:inherit;text-decoration:none;cursor:pointer}
+header a:hover,header button:hover{background:rgba(255,255,255,.15)}
+main{max-width:860px;margin:0 auto;padding:20px 16px 110px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:18px}
+h2{font-size:16px;margin:0 0 12px}
+#login{max-width:360px;margin:12vh auto;padding:0 16px}
+#login h2{font-size:20px}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+input[type=text],input[type=number],input[type=password]{width:100%;font:inherit;padding:8px 10px;border:1px solid #c3ced8;border-radius:6px;background:#fff;color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:3px solid #8fd3f5;outline-offset:1px}
+.btn{font:inherit;background:var(--blue);color:#fff;border:0;border-radius:6px;padding:9px 18px;cursor:pointer}
+.btn:hover{background:var(--dark)}.btn:disabled{background:#9db4c2;cursor:default}
+.btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--blue);padding:6px 12px}
+.row{display:grid;grid-template-columns:1fr 120px 64px 36px;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.row.head{border-top:0;color:var(--mute);font-size:13px;padding-top:0}
+.row.off input[type=text],.row.off input[type=number]{opacity:.5}
+.chk{text-align:center}.chk input{width:18px;height:18px}
+.del{background:none;border:0;color:var(--red);font-size:20px;cursor:pointer;line-height:1;padding:4px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:center}
+#msg{min-width:0;color:var(--mute)}#msg.err{color:var(--red)}#msg.ok{color:#1e7e45}
+[hidden]{display:none!important}
+@media(max-width:560px){.row{grid-template-columns:1fr 90px 44px 30px;gap:6px}}
+</style>
+</head>
+<body>
+<div id="login" hidden>
+  <form class="card" id="lf">
+    <h2>Big Infotech admin</h2>
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="current-password" required autofocus>
+    <p id="lmsg" class="err" style="margin:8px 0 0"></p>
+    <p style="margin:12px 0 0"><button class="btn" style="width:100%">Sign in</button></p>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header><h1>Price manager</h1><a href="/" target="_blank" rel="noopener">View website</a><button id="out">Sign out</button></header>
+  <main>
+    <p style="color:var(--mute);margin-top:0">Change a price or name, then press <b>Save changes</b>. The website updates within a minute. Untick <b>Show</b> to hide a product without deleting it.</p>
+    <div id="list"></div>
+  </main>
+  <div class="bar"><span id="msg">No changes yet</span><button class="btn" id="save" disabled>Save changes</button></div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let data, dirty = false;
+
+const api = (url, method = 'GET', body) => fetch(url, {
+  method, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+  body: body ? JSON.stringify(body) : undefined
+}).then(async r => {
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.error || 'Something went wrong'), { status: r.status });
+  return j;
+});
+
+function say(t, cls = '') { const m = $('#msg'); m.textContent = t; m.className = cls; }
+function setDirty(v) { dirty = v; $('#save').disabled = !v; if (v) say('You have unsaved changes'); }
+
+function render() {
+  const list = $('#list'); list.textContent = '';
+  data.categories.forEach(c => {
+    const card = document.createElement('section'); card.className = 'card';
+    const h = document.createElement('h2'); h.textContent = c.name; card.append(h);
+    const head = document.createElement('div'); head.className = 'row head';
+    ['Product name', 'Price (₹)', 'Show', ''].forEach(t => { const s = document.createElement('span'); s.textContent = t; head.append(s); });
+    card.append(head);
+    data.products.filter(p => p.category === c.id).forEach(p => card.append(row(p)));
+    const add = document.createElement('button'); add.className = 'btn ghost'; add.textContent = 'Add product'; add.style.marginTop = '10px';
+    add.onclick = () => {
+      const id = Math.max(0, ...data.products.map(p => p.id)) + 1;
+      data.products.push({ id, title: '', category: c.id, price: 0, active: true });
+      setDirty(true); render();
+      const ins = document.querySelectorAll('input[data-new]'); ins[ins.length - 1]?.focus();
+    };
+    card.append(add); list.append(card);
+  });
+}
+
+function row(p) {
+  const r = document.createElement('div'); r.className = 'row' + (p.active ? '' : ' off');
+  const n = document.createElement('input'); n.type = 'text'; n.value = p.title; n.maxLength = 150; n.setAttribute('aria-label', 'Product name');
+  if (!p.title) n.dataset.new = 1;
+  n.oninput = () => { p.title = n.value; setDirty(true); };
+  const pr = document.createElement('input'); pr.type = 'number'; pr.min = 0; pr.step = 1; pr.value = p.price; pr.setAttribute('aria-label', 'Price in rupees');
+  pr.oninput = () => { p.price = parseInt(pr.value, 10); setDirty(true); };
+  const cw = document.createElement('div'); cw.className = 'chk';
+  const ck = document.createElement('input'); ck.type = 'checkbox'; ck.checked = p.active; ck.setAttribute('aria-label', 'Show on website');
+  ck.onchange = () => { p.active = ck.checked; r.classList.toggle('off', !p.active); setDirty(true); };
+  cw.append(ck);
+  const d = document.createElement('button'); d.className = 'del'; d.textContent = '×'; d.title = 'Delete product'; d.setAttribute('aria-label', 'Delete product');
+  d.onclick = () => { if (confirm('Delete "' + (p.title || 'this product') + '"?')) { data.products = data.products.filter(x => x !== p); setDirty(true); render(); } };
+  r.append(n, pr, cw, d); return r;
+}
+
+async function load() {
+  try { data = await api('/api/prices?t=' + Date.now()); }
+  catch (e) { if (e.status === 401) return showLogin(); say(e.message, 'err'); $('#app').hidden = false; return; }
+  $('#login').hidden = true; $('#app').hidden = false; render(); say('No changes yet');
+}
+function showLogin() { $('#app').hidden = true; $('#login').hidden = false; $('#pw').focus(); }
+
+$('#lf').onsubmit = async e => {
+  e.preventDefault(); $('#lmsg').textContent = '';
+  try { await api('/api/auth?a=login', 'POST', { password: $('#pw').value }); $('#pw').value = ''; load(); }
+  catch (err) { $('#lmsg').textContent = err.message; }
+};
+$('#out').onclick = async () => { await api('/api/auth?a=logout', 'POST').catch(() => {}); location.reload(); };
+$('#save').onclick = async () => {
+  if (data.products.some(p => !p.title.trim())) return say('Give every product a name', 'err');
+  if (data.products.some(p => !Number.isInteger(p.price) || p.price < 0)) return say('Enter a valid price for every product', 'err');
+  $('#save').disabled = true; say('Saving…');
+  try { const r = await api('/api/prices', 'POST', { products: data.products }); data = r.data; dirty = false; render(); say('Saved. The website updates within a minute.', 'ok'); }
+  catch (e) { if (e.status === 401) return showLogin(); $('#save').disabled = false; say(e.message, 'err'); }
+};
+addEventListener('beforeunload', e => { if (dirty) e.preventDefault(); });
+
+api('/api/auth').then(load).catch(showLogin);
+</script>
+</body>
+</html>
